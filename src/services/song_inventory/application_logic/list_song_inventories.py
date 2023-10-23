@@ -57,7 +57,8 @@ def get_pagination_data(query, page, page_limit, pagination_data_required, total
     return params
 
 def apply_filter(query,filters):
-    
+    if not filters:
+        return query
     for filter_key , filter_value  in filters.items():
         
         if isinstance(filter_value, bool):
@@ -83,6 +84,8 @@ def apply_filter(query,filters):
 
 
 def get_applicable_filters(filters):
+    if not filters:
+        return
     possible_filters = {}
     for filter_param in POSSIBLE_DIRECT_FILTERS:
         if filters.get(filter_param) is not None:

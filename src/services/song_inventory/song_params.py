@@ -14,14 +14,14 @@ class CreateSongInventory(BaseModel):
     artist: str 
 
 class DeleteSongInventory(BaseModel):
-    id: str =  None
+    id: int =  None
     title: str =  None
     artist: str =  None
     duration: str =  None
     
 
 class UpdateSongInventory(BaseModel):
-    id: str =  None
+    id: int =  None
     title: str =  None
     dance_ability: float = None 
     energy: float = None
