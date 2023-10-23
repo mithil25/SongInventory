@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
 import json 
-
+from fastapi import HTTPException
 from services.song_inventory.song_params import *
 from database.insert_song_data import insert_song_inventory
 from services.song_inventory.application_logic.get_song_inventory import get_song_inventory
@@ -15,7 +15,7 @@ song_inventory_router = APIRouter()
 
 @song_inventory_router.get("/get_song_inventory")
 def get_song_inventory_api(
-    id: str = None,
+    id: int = None,
     title: str = None,
     duration: int = None,
     artist: str = None,
@@ -46,7 +46,7 @@ def create_song_inventory_api(request: CreateSongInventory):
 def delete_song_inventory_api(request: DeleteSongInventory):
     try:
         data = delete_song_inventory(request.dict())
-        return JSONResponse(status_code=200, content=json_encoder(data))
+        return JSONResponse(status_code=200, content = data)
     except HTTPException as e:
         raise
     except Exception as e:
@@ -57,7 +57,7 @@ def delete_song_inventory_api(request: DeleteSongInventory):
 # here filters is dictionary of song_inventory parameters in JSON STRING format
 @song_inventory_router.get("/list_song_inventory")
 def list_song_inventory_api(
-    filters: str = '{"category":"relaxing","artist":"Coldplay"}',
+    filters: str = None,
     page_limit: int = 10,
     page: int = 1,
     sort_by: str = "created_at",
