@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 import json 
 
 from services.song_inventory.song_params import *
-
+from database.insert_song_data import insert_song_inventory
 from services.song_inventory.application_logic.get_song_inventory import get_song_inventory
 from services.song_inventory.application_logic.create_song_inventory import create_song_inventory
 from services.song_inventory.application_logic.delete_song_inventory import delete_song_inventory
@@ -80,6 +80,17 @@ def update_song_inventory_api(request: UpdateSongInventory):
     try:
         data = update_song_inventory(request.dict())
         return JSONResponse(status_code=200, content= data)
+    except HTTPException as e:
+        raise
+    except Exception as e:
+        return JSONResponse(
+            status_code=500, content={"success": False, "error": str(e)}
+        )
+@song_inventory_router.get("/seed_song_data")
+def seed_song_data_trigger():
+    try:
+        insert_song_inventory()
+        return JSONResponse(status_code=200, content="Song Inventory Data Added")
     except HTTPException as e:
         raise
     except Exception as e:

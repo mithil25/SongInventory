@@ -29,7 +29,3 @@ def shutdown():
 def read_root():
     return "Welcome to Song Server!"
 
-@app.get("/seed_song_data")
-def seed_song_data():
-    insert_song_inventory()
-    return "Song Inventory Data Added"
