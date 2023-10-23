@@ -10,9 +10,9 @@ def create_song_inventory(request):
         try:
             response = execute_song_inventory_data_transaction(request)
             return response
-        except HTTPException as error:
+        except:
             transaction.rollback()
-            raise HTTPException(status_code = 404, detail = error)
+            raise
     
 def execute_song_inventory_data_transaction(request):
     search_params = get_search_params(request)
