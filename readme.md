@@ -36,6 +36,6 @@ Before you begin, ensure you have the following installed:
 3. Start Application:
    - cd src
    - python3 -m uvicorn main:app --reload
-   - /docs in browser on the default host to for the swagger UI
+   - /docs in browser on the default host to open the swagger UI
    - /seed_song_data to seed 10 song_inventory
    - Explore the project 
