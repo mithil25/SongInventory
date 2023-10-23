@@ -4,6 +4,7 @@ from database.db_config import db
 from operator import attrgetter
 from playhouse.shortcuts import model_to_dict
 import datetime
+from fastapi.encoders import jsonable_encoder
 
 POSSIBLE_FILTER_PARAMS =  ['id','title','artist','duration']
 
@@ -13,18 +14,17 @@ def get_song_inventory(request):
     search_params = get_search_params(request)
     
     if not search_params:
-       return HTTPException(status = 404, message = 'search parameters are invalid') 
+       raise HTTPException(status_code = 404, detail = 'search parameters are invalid') 
         
     song_inventory = get_song_inventory_data(request)
     
     return {
-        'data' : song_inventory
+        'data' : song_inventory[0]
     }
 
 def get_search_params(request):
     search_params = dict()
-    
-    if request.get('id'):
+    if request.get('id') is not None:
         search_params['id'] = request.get('id')
         return search_params
     
@@ -44,14 +44,14 @@ def remove_unneccessary_params(request):
     return filter_params
 
 
-def get_song_inventory_data(request):
+def get_song_inventory_data(search_params):
     song_inventory = SongInventory.select()
     for key in search_params.keys():
         song_inventory = song_inventory.where(attrgetter(key)(SongInventory) == search_params[key])
-        
-    song_inventory = model_to_dict(song_inventory)
+                         
+    song_inventory = jsonable_encoder(list(song_inventory.dicts()))
     
     if song_inventory is None:
-        return HTTPException(status_code = 404, detail = 'song inventory not found')
+        raise HTTPException(status_code = 404, detail = 'song inventory not found')
         
     return song_inventory

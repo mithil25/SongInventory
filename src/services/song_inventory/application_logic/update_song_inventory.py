@@ -32,7 +32,7 @@ def execute_song_inventory_data_transaction(request):
 def get_search_params(request):
     search_params = dict()
     
-    if request.get('id'):
+    if request.get('id') is not None:
         search_params['id'] = request.get('id')
         return search_params
     
@@ -60,18 +60,18 @@ def update_song_inventory_data(search_params,request):
     
     song_inventory = model_to_dict(song_inventory.first())
     if not song_inventory:
-        return HTTPException(status_code = 404, detail = 'song inventory not found')
+        raise HTTPException(status_code = 404, detail = 'song inventory not found')
     
     update_params = get_update_params(request)
     if not update_params:
-        return HTTPException(status_code = 404, detail = 'invalid update params')
+        raise HTTPException(status_code = 404, detail = 'invalid update params')
     
     query = SongInventory.update(**update_params).where(SongInventory.id == song_inventory.get('id'))  
     
     try:
        query.execute()
     except Exception as error:
-        return HTTPException(status_code = 404, detail = error)
+        raise HTTPException(status_code = 404, detail = error)
         
     return song_inventory
 
